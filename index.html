@@ -1,12 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beacon Neurological Disorders</title>
-</head>
-<body>
-    <h1>Welcome to Beacon Neurological Disorders</h1>
-    <p>This is a test page.</p>
-</body>
-</html>
+import React, { useState } from 'react';
+import { Search } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+
+const filterOptions = {
+  diseaseIndication: ['Alzheimer\'s', 'Parkinson\'s', 'Multiple Sclerosis', 'ALS'],
+  therapeuticClass: ['Small Molecules', 'Biologics', 'Gene Therapy', 'Cell Therapy'],
+  drugStatus: ['Preclinical', 'Phase I', 'Phase II', 'Phase III', 'Approved'],
+  drugTarget: ['Amyloid', 'Tau', 'Alpha-synuclein', 'Neuroinflammation'],
+  developer: ['Company A', 'Company B', 'Company C', 'Company D'],
+  biomarker: ['Amyloid PET', 'Tau PET', 'CSF biomarkers', 'Blood biomarkers'],
+  biomarkerFunction: ['Diagnostic', 'Prognostic', 'Predictive', 'Pharmacodynamic'],
+  biomarkerSampleType: ['Blood', 'CSF', 'Brain tissue', 'Urine'],
+  preclinicalModel: ['Transgenic mice', 'iPSC-derived neurons', 'Organoids', 'Non-human primates'],
+  deliverySystem: ['Oral', 'Injection', 'Gene therapy vector', 'Nanoparticles'],
+  routeOfAdministration: ['Oral', 'Intravenous', 'Intrathecal', 'Intranasal'],
+  molecularPathway: ['Amyloid pathway', 'Tau pathway', 'Neuroinflammation', 'Mitochondrial dysfunction'],
+  effectedBrainRegionCellType: ['Hippocampus', 'Cortex', 'Substantia nigra', 'Neurons']
+};
+
+const FilterSelect = ({ label, options, value, onChange }) => (
+  <div className="mb-4">
+    <Label className="text-sm font-medium text-gray-700 mb-1">{label}</Label>
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder={`Select ${label}`} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option} value={option}>
+            {option}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+);
+
+const BeaconNeurologicalDisorders = () => {
+  const [filters, setFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleFilterChange = (filterName, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterName]: value
+    }));
+  };
+
+  const handleSearch = () => {
+    console.log('Searching with filters:', filters, 'and query:', searchQuery);
+    // Implement search functionality here
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Beacon Neurological Disorders</h1>
+      
+      <div className="flex mb-6">
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-grow mr-2"
+        />
+        <Button onClick={handleSearch}>
+          <Search className="mr-2" />
+          Search
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {Object.entries(filterOptions).map(([key, options]) => (
+              <FilterSelect
+                key={key}
+                label={key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                options={options}
+                value={filters[key] || ''}
+                onChange={(value) => handleFilterChange(key, value)}
+              />
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Search Results</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Search results will be displayed here.</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default BeaconNeurologicalDisorders;
